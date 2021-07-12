@@ -291,7 +291,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
         feeAddress = _feeAddress;
     }
 
-    // Pancake has to add hidden dummy pools in order to alter the emission, here we make it simple and transparent to all.
+    // Boltr has to add hidden dummy pools in order to alter the emission, here we make it simple and transparent to all.
     function updateEmissionRate(uint256 _BOLPerBlock) public onlyOwner {
         massUpdatePools();
         emit EmissionRateUpdated(msg.sender, BOLPerBlock, _BOLPerBlock);

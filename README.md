@@ -1,5 +1,5 @@
 # BoltrSwap Farming
-![BoltrToolkit](https://github.com/boltrswap/Boltr-Farm/blob/main/Boltr%20Farm.jpg) 
+![BoltrFarm](https://github.com/boltrswap/Boltr-Farm/blob/main/Boltr%20Farm.jpg) 
 
 ## Deployed Contracts / Hash
 

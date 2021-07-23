@@ -1,7 +1,7 @@
 # BoltrSwap Farming
 ![BoltrFarm](https://github.com/boltrswap/Boltr-Farm/blob/main/Boltr%20Farm.jpg) 
-[![codecov](https://codecov.io/gh/Boltr/Boltr-farm/branch/master/graph/badge.svg?token=5XMLP74IR0)](https://github.com/boltrswap/Boltr-Farm/actions/runs/1059839835
-)
+[![Actions Status](https://github.com/boltr/boltr-farm/workflows/CI/badge.svg)](https://github.com/Boltr/Boltr-farm/actions)
+
 ## Deployed Contracts / Hash
 
 ### KCC TESTNET

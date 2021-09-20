@@ -13,14 +13,9 @@ import "./libs/KRC20.sol";
 // BoltrSwap with Governance.
 contract BoltrSwap is KRC20('Boltr', 'BOL') {
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
-    function mint(address to, uint256 amount) external onlyOwner {
-        _mint(to, amount);
-    }
-
-    /// @notice Moves delegates only on token transfers. Prevents the double spend vuln
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
-        super._beforeTokenTransfer(from, to, amount);
-        _moveDelegates(_delegates[from], _delegates[to], amount);
+    function mint(address _to, uint256 _amount) public onlyOwner {
+        _mint(_to, _amount);
+        _moveDelegates(address(0), _delegates[_to], _amount);
     }
 
     // Copied and modified from YAM code:

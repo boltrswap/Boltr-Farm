@@ -63,11 +63,12 @@ contract MasterChef is Ownable, ReentrancyGuard {
     address public feeAddress;
     // BOL tokens created per block.
     uint256 public BOLPerBlock;
-    // Bonus muliplier for early BOL makers.
-    uint256 public constant BONUS_MULTIPLIER = 1;
+    // Maximum BOL per block.
+    uint256 public constant MAX_BOL_PER_BLOCK = 50;
     // Max harvest interval: 14 days.
     uint256 public constant MAXIMUM_HARVEST_INTERVAL = 14 days;
 
+    mapping(address => bool) public poolExistence;
     // Info of each pool.
     PoolInfo[] public poolInfo;
     // Info of each user that stakes LP tokens.
@@ -99,13 +100,18 @@ contract MasterChef is Ownable, ReentrancyGuard {
         feeAddress = msg.sender;
     }
 
+    modifier nonDuplicated (IKRC20 _lpToken) {
+        require(poolExistence[address(_lpToken)] == false, "nonDuplicated: duplicated");
+        _;
+    }
+
     function poolLength() external view returns (uint256) {
         return poolInfo.length;
     }
 
     // Add a new lp to the pool. Can only be called by the owner.
     // XXX DO NOT add the same LP token more than once. Rewards will be messed up if you do.
-    function add(uint256 _allocPoint, IKRC20 _lpToken, uint16 _depositFeeBP, uint256 _harvestInterval, bool _withUpdate) public onlyOwner {
+    function add(uint256 _allocPoint, IKRC20 _lpToken, uint16 _depositFeeBP, uint256 _harvestInterval, external onlyOwner nonDuplicated(_lpToken) {
         require(_depositFeeBP <= 10000, "add: invalid deposit fee basis points");
         require(_harvestInterval <= MAXIMUM_HARVEST_INTERVAL, "add: invalid harvest interval");
         if (_withUpdate) {
@@ -113,6 +119,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
         }
         uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
         totalAllocPoint = totalAllocPoint.add(_allocPoint);
+        poolExistence[address(_lpToken)] = true;
         poolInfo.push(PoolInfo({
             lpToken: _lpToken,
             allocPoint: _allocPoint,
@@ -124,7 +131,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
     }
 
     // Update the given pool's BOL allocation point and deposit fee. Can only be called by the owner.
-    function set(uint256 _pid, uint256 _allocPoint, uint16 _depositFeeBP, uint256 _harvestInterval, bool _withUpdate) public onlyOwner {
+    function set(uint256 _pid, uint256 _allocPoint, uint16 _depositFeeBP, uint256 _harvestInterval, bool _withUpdate) external onlyOwner {
         require(_depositFeeBP <= 10000, "set: invalid deposit fee basis points");
         require(_harvestInterval <= MAXIMUM_HARVEST_INTERVAL, "set: invalid harvest interval");
         if (_withUpdate) {
@@ -138,7 +145,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
 
     // Return reward multiplier over the given _from to _to block.
     function getMultiplier(uint256 _from, uint256 _to) public pure returns (uint256) {
-        return _to.sub(_from).mul(BONUS_MULTIPLIER);
+        return _to.sub(_from);
     }
 
     // View function to see pending BOLs on frontend.
@@ -190,7 +197,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
     }
 
     // Deposit LP tokens to MasterChef for BOL allocation.
-    function deposit(uint256 _pid, uint256 _amount) public nonReentrant {
+    function deposit(uint256 _pid, uint256 _amount) external nonReentrant {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
@@ -212,7 +219,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
     }
 
     // Withdraw LP tokens from MasterChef.
-    function withdraw(uint256 _pid, uint256 _amount) public nonReentrant {
+    function withdraw(uint256 _pid, uint256 _amount) external nonReentrant {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
@@ -227,7 +234,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
-    function emergencyWithdraw(uint256 _pid) public nonReentrant {
+    function emergencyWithdraw(uint256 _pid) external nonReentrant {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         uint256 amount = user.amount;
@@ -293,6 +300,7 @@ contract MasterChef is Ownable, ReentrancyGuard {
 
     // Boltr has to add hidden dummy pools in order to alter the emission, here we make it simple and transparent to all.
     function updateEmissionRate(uint256 _BOLPerBlock) public onlyOwner {
+        require(_BOLPerBlock <= MAX_BOL_PER_BLOCK, "updateEmissionRate: too high");
         massUpdatePools();
         emit EmissionRateUpdated(msg.sender, BOLPerBlock, _BOLPerBlock);
         BOLPerBlock = _BOLPerBlock;

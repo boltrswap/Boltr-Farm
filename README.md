@@ -10,5 +10,5 @@
 
 ### KCC MAINNET
 - BoltrSwap - https://explorer.kcc.io/en/token/0x258e78df1f9235025294b29feabdffa18fb5138e
-- MasterChef - https://explorer.kcc.io/en/token/0xD6A85cc3473876567d3b2503C1Ede299c28cd69e
-- Timelock - https://explorer.kcc.io/en/token/0xd91290Bb6c64466897D714E623eCe19F1A1518D6
+- MasterChef - https://explorer.kcc.io/en/address/0xD6A85cc3473876567d3b2503C1Ede299c28cd69e
+- Timelock - https://explorer.kcc.io/en/address/0xd91290Bb6c64466897D714E623eCe19F1A1518D6

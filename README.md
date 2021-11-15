@@ -4,6 +4,6 @@
 ## Deployed Contracts / Hash
 
 ### Polygon MAINNET
-- BoltrSwap - https://polygonscan.com/address/0x6d58c4383B97e9a4e0586759e30574DF31cd30d0
-- MasterChef - https://polygonscan.com/address/0x21a1D92d3F837e875e0BBBBA749a7909266dbdE7
+- BoltrSwap - https://polygonscan.com/token/0x8b661d59f1923b138e0048ff5ed5b8fef6f9e5cf
+- MasterChef - https://polygonscan.com/address/0x6ee4b5b4787e65704819bad006a6c392be232b2d
 - Timelock - https://polygonscan.com/address/0x9561C7239b0A2ffF9fcD104564a99cCb91d10330
